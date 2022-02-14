@@ -1,0 +1,12 @@
+apiVersion: record.cloudflare.jet.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  name: localhost
+spec:
+  forProvider:
+    name: localhost
+    zoneId: $ZONE_ID
+    type: A
+    value: "127.0.0.1"
+  providerConfigRef:
+    name: default

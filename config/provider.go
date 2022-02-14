@@ -17,13 +17,15 @@ limitations under the License.
 package config
 
 import (
+	"github.com/crossplane-contrib/provider-jet-cloudflare/config/firewall"
+	"github.com/crossplane-contrib/provider-jet-cloudflare/config/record"
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 const (
-	resourcePrefix = "template"
-	modulePath     = "github.com/crossplane-contrib/provider-jet-template"
+	resourcePrefix = "cloudflare"
+	modulePath     = "github.com/crossplane-contrib/provider-jet-cloudflare"
 )
 
 // GetProvider returns provider configuration
@@ -36,10 +38,17 @@ func GetProvider(resourceMap map[string]*schema.Resource) *tjconfig.Provider {
 	}
 
 	pc := tjconfig.NewProvider(resourceMap, resourcePrefix, modulePath,
-		tjconfig.WithDefaultResourceFn(defaultResourceFn))
+		tjconfig.WithDefaultResourceFn(defaultResourceFn),
+		tjconfig.WithIncludeList([]string{
+			"cloudflare_record$",
+			"cloudflare_firewall_rule$",
+			"cloudflare_filter$",
+		}))
 
 	for _, configure := range []func(provider *tjconfig.Provider){
 		// add custom config functions
+		record.Configure,
+		firewall.Configure,
 	} {
 		configure(pc)
 	}

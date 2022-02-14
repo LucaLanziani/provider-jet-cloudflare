@@ -1,25 +1,37 @@
-# Terrajet Template Provider
+# Terrajet CloudFlare Provider
 
-`provider-jet-template` is a [Crossplane](https://crossplane.io/) provider that
+`provider-jet-cloudflare` is a [Crossplane](https://crossplane.io/) provider that
 is built using [Terrajet](https://github.com/crossplane/terrajet) code
 generation tools and exposes XRM-conformant managed resources for the 
-Template API.
-
-## Getting Started
-
-Install the provider by using the following command after changing the image tag
-to the [latest release](https://github.com/crossplane-contrib/provider-jet-template/releases):
-```
-kubectl crossplane install provider crossplane/provider-jet-template:v0.1.0
-```
-
-You can see the API reference [here](https://doc.crds.dev/github.com/crossplane-contrib/provider-jet-template).
+CloudFlare API.
 
 ## Developing
 
 Run code-generation pipeline:
+
 ```console
-go run cmd/generator/main.go
+make generate
+```
+
+Install CRDS
+
+```console
+kubectl apply -f package/crds
+```
+
+Add credentials and provider config
+
+```console
+export CLOUDFLARE_API_TOKEN=<cloudflare-api-token>
+cat examples/providerconfig/secret.yaml | envsubst | kubectl apply -f -
+kubectl apply -f examples/providerconfig/providerconfig.yaml
+```
+
+Add localhost config, this should create a localhost entry in the provided zone
+
+```console
+export ZONE_ID=<zoneid>
+cat examples/record/record.yaml | envsubst | kubectl apply -f -
 ```
 
 Run against a Kubernetes cluster:
@@ -55,31 +67,21 @@ make build
 ## Report a Bug
 
 For filing bugs, suggesting improvements, or requesting new features, please
-open an [issue](https://github.com/crossplane-contrib/provider-jet-template/issues).
-
-## Contact
-
-Please use the following to reach members of the community:
-
-* Slack: Join our [slack channel](https://slack.crossplane.io)
-* Forums:
-  [crossplane-dev](https://groups.google.com/forum/#!forum/crossplane-dev)
-* Twitter: [@crossplane_io](https://twitter.com/crossplane_io)
-* Email: [info@crossplane.io](mailto:info@crossplane.io)
+open an [issue](https://github.com/LucaLanziani/provider-jet-cloudflare/issues).
 
 ## Governance and Owners
 
-provider-jet-template is run according to the same
+provider-jet-cloudflare is run according to the same
 [Governance](https://github.com/crossplane/crossplane/blob/master/GOVERNANCE.md)
 and [Ownership](https://github.com/crossplane/crossplane/blob/master/OWNERS.md)
 structure as the core Crossplane project.
 
 ## Code of Conduct
 
-provider-jet-template adheres to the same [Code of
+provider-jet-cloudflare adheres to the same [Code of
 Conduct](https://github.com/crossplane/crossplane/blob/master/CODE_OF_CONDUCT.md)
 as the core Crossplane project.
 
 ## Licensing
 
-provider-jet-template is under the Apache 2.0 license.
+provider-jet-cloudflare is under the Apache 2.0 license.
